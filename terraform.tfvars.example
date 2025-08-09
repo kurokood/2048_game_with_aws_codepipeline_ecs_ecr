@@ -1,0 +1,32 @@
+# Copy this file to terraform.tfvars and update with your values
+
+# AWS Configuration
+aws_account_id = "123456789012"  # Replace with your AWS account ID
+aws_region     = "us-east-1"
+
+# Project Configuration
+project_name = "2048-game"
+environment  = "prod"
+
+# GitHub Configuration
+github_repository_url = "https://github.com/kurokood/2048_game_with_aws_codepipeline_ecs_ecr.git"
+github_owner          = "kurokood"
+github_repo           = "2048_game_with_aws_codepipeline_ecs_ecr"
+github_branch         = "master"
+github_token          = "your-github-personal-access-token"  # Replace with your GitHub PAT
+
+# Resource Names (optional - defaults are provided)
+# ecr_repository_name       = "2048-game-repo"
+# s3_artifact_bucket_name   = "2048-game-cicd-pipeline-artifact-121485"
+# ecs_cluster_name          = "2048-game-cluster"
+# ecs_service_name          = "2048-service"
+# ecs_task_definition_name  = "2048-game-task"
+# ecs_container_name        = "2048-container"
+# codebuild_project_name    = "2048-game-build"
+# codepipeline_name         = "2048-game-pipeline"
+
+# ECS Configuration (optional - defaults are provided)
+# desired_task_count = 1
+# container_port     = 80
+# cpu                = 256
+# memory             = 512

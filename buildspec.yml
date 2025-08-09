@@ -4,19 +4,21 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 026045577315.dkr.ecr.us-east-1.amazonaws.com/2048-game-repo
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t 2048-game .
+      - cd frontend
+      - docker build -t $IMAGE_REPO_NAME .
       - echo Tagging the Docker image...
-      - docker tag 2048-game:latest 026045577315.dkr.ecr.us-east-1.amazonaws.com/2048-game-repo:latest
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:
     commands:
       - echo Pushing the Docker image to Amazon ECR...
-      - docker push 026045577315.dkr.ecr.us-east-1.amazonaws.com/2048-game-repo:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Creating imagedefinitions.json file for ECS deployment...
-      - echo '[{"name":"2048-container","imageUri":"026045577315.dkr.ecr.us-east-1.amazonaws.com/2048-game-repo:latest"}]' > imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
 artifacts:
   files:
     - imagedefinitions.json
