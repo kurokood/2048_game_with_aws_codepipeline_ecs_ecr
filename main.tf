@@ -24,9 +24,10 @@ module "iam" {
   region                  = data.aws_region.current.name
   s3_artifact_bucket_name = var.s3_artifact_bucket_name
   ecr_repository_name     = var.ecr_repository_name
-  ecs_cluster_name        = var.ecs_cluster_name
-  ecs_service_name        = var.ecs_service_name
-  codebuild_project_name  = var.codebuild_project_name
+  ecs_cluster_name           = var.ecs_cluster_name
+  ecs_service_name           = var.ecs_service_name
+  ecs_task_definition_name   = var.ecs_task_definition_name
+  codebuild_project_name     = var.codebuild_project_name
 }
 
 # ECR Module - Creates container registry

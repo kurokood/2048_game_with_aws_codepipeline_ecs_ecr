@@ -209,7 +209,12 @@ resource "aws_iam_role_policy" "codepipeline_ecs_permission_policy" {
           "ecs:DescribeTasks",
           "ecs:ListTasks",
           "ecs:RegisterTaskDefinition",
-          "ecs:UpdateService"
+          "ecs:UpdateService",
+          "ecs:DescribeClusters",
+          "ecs:ListServices",
+          "ecs:ListTaskDefinitions",
+          "ecs:CreateService",
+          "ecs:DeleteService"
         ]
         Resource = "*"
       },
@@ -221,9 +226,28 @@ resource "aws_iam_role_policy" "codepipeline_ecs_permission_policy" {
         Resource = "*"
         Condition = {
           StringLike = {
-            "iam:PassedToService" = "ecs-tasks.amazonaws.com"
+            "iam:PassedToService" = ["ecs-tasks.amazonaws.com", "ecs.amazonaws.com"]
           }
         }
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:RunTask",
+          "ecs:StopTask"
+        ]
+        Resource = [
+          "arn:aws:ecs:${var.region}:${var.account_id}:cluster/${var.ecs_cluster_name}",
+          "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${var.ecs_task_definition_name}:*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:DescribeTaskDefinition",
+          "ecs:RegisterTaskDefinition"
+        ]
+        Resource = "*"
       }
     ]
   })

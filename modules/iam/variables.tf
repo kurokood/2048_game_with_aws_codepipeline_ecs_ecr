@@ -37,3 +37,8 @@ variable "codebuild_project_name" {
   description = "CodeBuild project name"
   type        = string
 }
+
+variable "ecs_task_definition_name" {
+  description = "ECS task definition name"
+  type        = string
+}
