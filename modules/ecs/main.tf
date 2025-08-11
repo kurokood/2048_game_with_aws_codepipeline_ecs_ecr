@@ -124,10 +124,10 @@ resource "aws_ecs_service" "game_service" {
     Project     = var.project_name
   }
 
-  # Ignore changes to task_definition and desired_count after initial creation
-  # CodePipeline will manage these
+  # Ignore changes to task_definition after initial creation
+  # CodePipeline will manage task_definition updates
   lifecycle {
-    ignore_changes = [task_definition, desired_count]
+    ignore_changes = [task_definition]
   }
 
   depends_on = [
