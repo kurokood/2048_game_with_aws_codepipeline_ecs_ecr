@@ -16,14 +16,12 @@ phases:
     commands:
       - echo "=== Building the Docker image ==="
       - echo "Current directory is $(pwd)"
-      - echo "Listing files"
+      - echo "Listing files in root"
       - ls -la
-      - echo "Changing to frontend directory"
-      - cd frontend
-      - echo "Frontend directory contents"
-      - ls -la
-      - echo "Building Docker image"
-      - docker build -t $IMAGE_REPO_NAME .
+      - echo "Listing files in frontend directory"
+      - ls -la frontend/
+      - echo "Building Docker image from frontend directory"
+      - docker build -t $IMAGE_REPO_NAME frontend/
       - echo "=== Tagging the Docker image ==="
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:
