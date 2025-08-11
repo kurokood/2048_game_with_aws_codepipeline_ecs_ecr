@@ -1,6 +1,6 @@
 # ServiceRoleForECS - IAM role for ECS service
 resource "aws_iam_role" "ecs_service_role" {
-  name = "ServiceRoleForECS"
+  name = "${var.project_name}-ServiceRoleForECS"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -16,7 +16,7 @@ resource "aws_iam_role" "ecs_service_role" {
   })
 
   tags = {
-    Name    = "ServiceRoleForECS"
+    Name    = "${var.project_name}-ServiceRoleForECS"
     Project = var.project_name
   }
 }
@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "ecs_service_role_policy" {
 
 # ECS Task Execution Role - Required for Fargate tasks
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ECSTaskExecutionRole"
+  name = "${var.project_name}-ECSTaskExecutionRole"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -45,7 +45,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   })
 
   tags = {
-    Name    = "ECSTaskExecutionRole"
+    Name    = "${var.project_name}-ECSTaskExecutionRole"
     Project = var.project_name
   }
 }
@@ -58,7 +58,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 
 # ServiceRoleForCodeBuild - IAM role for CodeBuild service
 resource "aws_iam_role" "codebuild_service_role" {
-  name = "ServiceRoleForCodeBuild"
+  name = "${var.project_name}-ServiceRoleForCodeBuild"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -74,7 +74,7 @@ resource "aws_iam_role" "codebuild_service_role" {
   })
 
   tags = {
-    Name    = "ServiceRoleForCodeBuild"
+    Name    = "${var.project_name}-ServiceRoleForCodeBuild"
     Project = var.project_name
   }
 }
@@ -156,7 +156,7 @@ resource "aws_iam_role_policy" "codebuild_ecs_permission_policy" {
 }
 # ServiceRoleForCodePipeline - IAM role for CodePipeline service
 resource "aws_iam_role" "codepipeline_service_role" {
-  name = "ServiceRoleForCodePipeline"
+  name = "${var.project_name}-ServiceRoleForCodePipeline"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -172,7 +172,7 @@ resource "aws_iam_role" "codepipeline_service_role" {
   })
 
   tags = {
-    Name    = "ServiceRoleForCodePipeline"
+    Name    = "${var.project_name}-ServiceRoleForCodePipeline"
     Project = var.project_name
   }
 }
