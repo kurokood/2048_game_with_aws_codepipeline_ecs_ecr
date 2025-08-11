@@ -87,8 +87,8 @@ module "codebuild" {
 
   project_name        = var.codebuild_project_name
   service_role_arn    = module.iam.codebuild_service_role_arn
-  s3_bucket_name      = module.s3.bucket_name
-  ecr_repository_name = module.ecr.repository_name
+  s3_bucket_name      = var.s3_artifact_bucket_name
+  ecr_repository_name = var.ecr_repository_name
   account_id          = data.aws_caller_identity.current.account_id
   region              = data.aws_region.current.name
   environment         = var.environment
@@ -104,12 +104,12 @@ module "codepipeline" {
 
   pipeline_name          = var.codepipeline_name
   service_role_arn       = module.iam.codepipeline_service_role_arn
-  s3_bucket_name         = module.s3.bucket_name
+  s3_bucket_name         = var.s3_artifact_bucket_name
   github_owner           = var.github_owner
   github_repo            = var.github_repo
   github_branch          = var.github_branch
   github_token           = var.github_token
-  codebuild_project_name = module.codebuild.project_name
-  ecs_cluster_name       = module.ecs.cluster_name
-  ecs_service_name       = module.ecs.service_name
+  codebuild_project_name = var.codebuild_project_name
+  ecs_cluster_name       = var.ecs_cluster_name
+  ecs_service_name       = var.ecs_service_name
 }
