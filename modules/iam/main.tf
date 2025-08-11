@@ -27,6 +27,35 @@ resource "aws_iam_role_policy_attachment" "ecs_service_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }
 
+# ECS Task Execution Role - Required for Fargate tasks
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "ECSTaskExecutionRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name    = "ECSTaskExecutionRole"
+    Project = var.project_name
+  }
+}
+
+# Attach the AWS managed ECS task execution role policy
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
 # ServiceRoleForCodeBuild - IAM role for CodeBuild service
 resource "aws_iam_role" "codebuild_service_role" {
   name = "ServiceRoleForCodeBuild"
@@ -148,6 +177,50 @@ resource "aws_iam_role" "codepipeline_service_role" {
   }
 }
 
+# Attach AWS managed policy for ECS full access to CodePipeline role
+resource "aws_iam_role_policy_attachment" "codepipeline_ecs_full_access" {
+  role       = aws_iam_role.codepipeline_service_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+}
+
+# Additional policy specifically for CodePipeline ECS deployments
+resource "aws_iam_role_policy" "codepipeline_ecs_deployment_policy" {
+  name = "CodePipelineECSDeploymentPolicy"
+  role = aws_iam_role.codepipeline_service_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:DescribeServices",
+          "ecs:DescribeTaskDefinition",
+          "ecs:DescribeTasks",
+          "ecs:ListTasks",
+          "ecs:RegisterTaskDefinition",
+          "ecs:UpdateService",
+          "ecs:DescribeClusters"
+        ]
+        Resource = [
+          "arn:aws:ecs:${var.region}:${var.account_id}:cluster/${var.ecs_cluster_name}",
+          "arn:aws:ecs:${var.region}:${var.account_id}:service/${var.ecs_cluster_name}/${var.ecs_service_name}",
+          "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${var.ecs_task_definition_name}:*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:RegisterTaskDefinition",
+          "ecs:ListTaskDefinitions",
+          "ecs:DescribeTaskDefinition"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Inline policy for CodePipeline - S3 bucket access permissions
 resource "aws_iam_role_policy" "codepipeline_s3_permission_policy" {
   name = "ServicePermissionPolicyForS3"
@@ -204,17 +277,7 @@ resource "aws_iam_role_policy" "codepipeline_ecs_permission_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ecs:DescribeServices",
-          "ecs:DescribeTaskDefinition",
-          "ecs:DescribeTasks",
-          "ecs:ListTasks",
-          "ecs:RegisterTaskDefinition",
-          "ecs:UpdateService",
-          "ecs:DescribeClusters",
-          "ecs:ListServices",
-          "ecs:ListTaskDefinitions",
-          "ecs:CreateService",
-          "ecs:DeleteService"
+          "ecs:*"
         ]
         Resource = "*"
       },
@@ -224,28 +287,39 @@ resource "aws_iam_role_policy" "codepipeline_ecs_permission_policy" {
           "iam:PassRole"
         ]
         Resource = "*"
-        Condition = {
-          StringLike = {
-            "iam:PassedToService" = ["ecs-tasks.amazonaws.com", "ecs.amazonaws.com"]
-          }
-        }
       },
       {
         Effect = "Allow"
         Action = [
-          "ecs:RunTask",
-          "ecs:StopTask"
+          "application-autoscaling:*"
         ]
-        Resource = [
-          "arn:aws:ecs:${var.region}:${var.account_id}:cluster/${var.ecs_cluster_name}",
-          "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${var.ecs_task_definition_name}:*"
-        ]
+        Resource = "*"
       },
       {
         Effect = "Allow"
         Action = [
-          "ecs:DescribeTaskDefinition",
-          "ecs:RegisterTaskDefinition"
+          "elasticloadbalancing:*"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeVpcs"
         ]
         Resource = "*"
       }
