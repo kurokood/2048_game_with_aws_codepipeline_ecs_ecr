@@ -5,9 +5,7 @@ resource "aws_codebuild_project" "game_build" {
   service_role = var.service_role_arn
 
   artifacts {
-    type      = "S3"
-    location  = "${var.s3_bucket_name}/build-artifacts"
-    packaging = "NONE"
+    type = "CODEPIPELINE"
   }
 
   environment {
@@ -44,10 +42,7 @@ resource "aws_codebuild_project" "game_build" {
   }
 
   source {
-    type            = "GITHUB"
-    location        = var.github_repository_url
-    git_clone_depth = 1
-
+    type      = "CODEPIPELINE"
     buildspec = "buildspec.yml"
   }
 

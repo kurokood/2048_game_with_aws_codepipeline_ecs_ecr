@@ -85,15 +85,14 @@ module "codebuild" {
 
   depends_on = [module.iam, module.ecr, module.s3]
 
-  project_name          = var.codebuild_project_name
-  github_repository_url = var.github_repository_url
-  service_role_arn      = module.iam.codebuild_service_role_arn
-  s3_bucket_name        = module.s3.bucket_name
-  ecr_repository_name   = module.ecr.repository_name
-  account_id            = data.aws_caller_identity.current.account_id
-  region                = data.aws_region.current.name
-  environment           = var.environment
-  container_name        = var.ecs_container_name
+  project_name        = var.codebuild_project_name
+  service_role_arn    = module.iam.codebuild_service_role_arn
+  s3_bucket_name      = module.s3.bucket_name
+  ecr_repository_name = module.ecr.repository_name
+  account_id          = data.aws_caller_identity.current.account_id
+  region              = data.aws_region.current.name
+  environment         = var.environment
+  container_name      = var.ecs_container_name
 }
 
 # CodePipeline Module - Creates CI/CD pipeline

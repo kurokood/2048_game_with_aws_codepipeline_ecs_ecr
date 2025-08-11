@@ -10,15 +10,7 @@ variable "project_name" {
   }
 }
 
-variable "github_repository_url" {
-  description = "GitHub repository URL for source code"
-  type        = string
 
-  validation {
-    condition     = can(regex("^https://github\\.com/.+/.+\\.git$", var.github_repository_url))
-    error_message = "GitHub repository URL must be a valid HTTPS GitHub URL ending with .git."
-  }
-}
 
 variable "service_role_arn" {
   description = "ARN of the IAM service role for CodeBuild"
