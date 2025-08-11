@@ -109,7 +109,7 @@ resource "aws_ecs_service" "game_service" {
   name            = var.service_name
   cluster         = aws_ecs_cluster.game_cluster.id
   task_definition = aws_ecs_task_definition.game_task.arn
-  desired_count   = var.desired_count
+  desired_count   = var.initial_desired_count
   launch_type     = "FARGATE"
 
   network_configuration {
@@ -122,6 +122,12 @@ resource "aws_ecs_service" "game_service" {
     Name        = var.service_name
     Environment = var.environment
     Project     = var.project_name
+  }
+
+  # Ignore changes to task_definition and desired_count after initial creation
+  # CodePipeline will manage these
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
   }
 
   depends_on = [

@@ -108,6 +108,12 @@ variable "desired_count" {
   default     = 1
 }
 
+variable "initial_desired_count" {
+  description = "Initial desired count for first deployment (should be 0 until image exists)"
+  type        = number
+  default     = 0
+}
+
 variable "vpc_id" {
   description = "VPC ID where ECS service will be deployed"
   type        = string
