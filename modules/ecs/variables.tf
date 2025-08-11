@@ -111,7 +111,7 @@ variable "desired_count" {
 variable "initial_desired_count" {
   description = "Initial desired count for first deployment (should be 0 until image exists)"
   type        = number
-  default     = 0
+  default     = 1
 }
 
 variable "vpc_id" {
