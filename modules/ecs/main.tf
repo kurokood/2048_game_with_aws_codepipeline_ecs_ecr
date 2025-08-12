@@ -54,7 +54,16 @@ resource "aws_ecs_task_definition" "game_task" {
         }
       }
 
-      essential = true
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 60
+      }
+
+      essential   = true
+      stopTimeout = 30
     }
   ])
 
@@ -111,6 +120,16 @@ resource "aws_ecs_service" "game_service" {
   task_definition = aws_ecs_task_definition.game_task.arn
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
+
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 50
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
+
 
   network_configuration {
     subnets          = var.subnet_ids
