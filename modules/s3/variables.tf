@@ -28,3 +28,9 @@ variable "project_name" {
   }
 }
 
+variable "force_destroy" {
+  description = "Allow bucket to be destroyed even if it contains objects (use with caution in production)"
+  type        = bool
+  default     = true # Set to true for CI/CD artifact buckets
+}
+
