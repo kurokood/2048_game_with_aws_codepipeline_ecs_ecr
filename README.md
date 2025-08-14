@@ -500,6 +500,7 @@ A: Use Fargate Spot, reduce task count, or use smaller instance sizes
 
 ---
 
-**🌟 Star this repository if you found it helpful!**
-
-**📧 Questions? Open an issue or reach out!**
+###  Author: Mon Villarin
+ 📌 LinkedIn: [Ramon Villarin](https://www.linkedin.com/in/ramon-villarin/)  
+ 📌 Portfolio Site: [MonVillarin.com](https://monvillarin.com)  
+ 📌 Blog Post: [A Business Intelligence Pipeline That Transforms Clickstream Into Insights]([https://blog.monvillarin.com/from-resume-to-the-cloud-how-i-](https://blog.monvillarin.com/serverless-approach-with-aws-cicd-transforming-operations-and-reducing-costs)
